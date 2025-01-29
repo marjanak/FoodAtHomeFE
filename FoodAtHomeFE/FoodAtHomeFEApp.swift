@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct FoodAtHomeFEApp: App {
+    @State var dataManager = DataManager()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomeView()
+                .environment(dataManager)
         }
     }
 }
