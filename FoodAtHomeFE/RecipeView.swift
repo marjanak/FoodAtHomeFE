@@ -23,6 +23,7 @@ struct RecipeView: View {
                     ForEach(dataManager.recipes, id: \.id) { recipe in
                         RecipeCardView(recipeName: recipe.name, imageURL: URL(string: recipe.image))
                     }
+                    .onDelete(perform: deleteRecipe)
                 }
             }
             .onAppear {
@@ -40,6 +41,14 @@ struct RecipeView: View {
                         print("Pressed Find Recipe")
                     }
                 }
+            }
+        }
+    }
+    private func deleteRecipe(at offsets: IndexSet) {
+        for index in offsets {
+            let recipe = dataManager.recipes[index]
+            Task {
+                await dataManager.deleteRecipe(recipeID: recipe.id)
             }
         }
     }

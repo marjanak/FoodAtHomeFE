@@ -48,7 +48,6 @@ struct PantryView: View {
 private func deleteIngredient(at offsets: IndexSet) {
     for index in offsets {
         let ingredient = dataManager.pantry[index]
-        print(index, ingredient)
         Task {
             await dataManager.deleteIngredient(ingredientID: ingredient.id)
         }

@@ -108,4 +108,26 @@ class DataManager {
         }
     }
     
+    func deleteRecipe(recipeID: Int) async {
+        let url = URL(string: "\(baseURL)/recipes/\(recipeID)")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        let session = URLSession(configuration: .default)
+        do {
+            let (data, response) = try await session.data(for: request)
+            let jsonDataResponse = try JSONDecoder().decode(LoginResponse.self, from: data)
+            print("Message: \(jsonDataResponse.message)")
+            print("Response: \(response)")
+            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                recipes.removeAll() {$0.id == recipeID}
+                print("Ingredient \(recipeID) deleted successfully.")
+                print("HTTP Response: \(response)")
+            } else {
+                print("Failed to delete recipe \(recipeID).")
+            }
+        } catch {
+            print("Error deleting recipe: \(error)")
+        }
+    }
+    
 }
