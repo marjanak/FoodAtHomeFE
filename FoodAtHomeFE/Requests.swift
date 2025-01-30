@@ -26,12 +26,12 @@ struct Ingredient: Codable, Identifiable {
 }
 
 struct RecipesResponse: Codable {
-    let recipes: [Recipe]
+    let recipe: [Recipe] 
 }
 
 struct Recipe: Codable, Identifiable {
     let id: Int
     let name: String
     let recipe_id: Int
-    let foodie_id: Int
+    let image: String
 }

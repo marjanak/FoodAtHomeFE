@@ -91,26 +91,21 @@ class DataManager {
     }
     
     func fetchRecipes() async {
-        let url = URL(string: "\(baseURL)/all")!
+        let url = URL(string: "\(baseURL)/recipes/all")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         let session = URLSession(configuration: .default)
         do {
             let (data, response) = try await session.data(for: request)
-            
-            // Decode the response
-            let decodedResponse = try JSONDecoder().decode([Recipe].self, from: data)
-            recipes = decodedResponse
+            let decodedResponse = try JSONDecoder().decode(RecipesResponse.self, from: data)
+            recipes = decodedResponse.recipe
             for recipe in recipes {
-                print("Recipe ID: \(recipe.id), Name: \(recipe.name), Recipe ID: \(recipe.recipe_id), Foodie ID: \(recipe.foodie_id)")
+                print("Recipe ID: \(recipe.id), Name: \(recipe.name), Image: \(recipe.image), Recipe ID: \(recipe.recipe_id)")
             }
-            
             print("HTTP Response: \(response)")
-            
         } catch {
             print("Error fetching recipes: \(error)")
         }
     }
     
 }
-
