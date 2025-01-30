@@ -15,10 +15,11 @@ struct RecipeView: View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: [
-                    GridItem(.fixed(100)),
-                    GridItem(.fixed(100)),
-                    GridItem(.fixed(100))
-                ]) {
+                    GridItem(),
+                    GridItem()
+                ],
+                spacing: 19)
+                {
                     ForEach(dataManager.recipes, id: \.id) { recipe in
                         RecipeCardView(recipeName: recipe.name, imageURL: URL(string: recipe.image))
                     }

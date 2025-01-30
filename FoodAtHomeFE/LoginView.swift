@@ -33,7 +33,7 @@ struct LoginView: View {
                 .background(Color.gray.opacity(0.2))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             
-            Button("Login") {
+            Button(isRegistering ? "Register" : "Login") {
                 print("Continuing with username: \(username) password: \(password)")
                 Task {
                     await dataManager.signInWith(username: username, password: password)

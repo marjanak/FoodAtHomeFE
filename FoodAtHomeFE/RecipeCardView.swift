@@ -12,28 +12,24 @@ struct RecipeCardView: View {
     let imageURL: URL?
     
     var body: some View {
-        VStack {
+        ZStack {
             NavigationLink(destination: DetailRecipeView(recipeName: recipeName)) {
-                Text(recipeName)
-                    .font(.headline)
-                    .foregroundColor(.blue)
-                
                 AsyncImage(url: imageURL) { phase in
                     switch phase {
                     case .empty:
                         ProgressView()
-                            .frame(maxWidth: 100, maxHeight: 100)
+                            .frame(maxWidth: 200, maxHeight: 100)
                     case .success(let image):
                         image
                             .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(maxWidth: 100, maxHeight: 100)
+                            .aspectRatio(contentMode: .fill)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                         //                        .clipped()
                     case .failure:
                         Image(systemName: "photo.fill")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(maxWidth: 100, maxHeight: 100)
+                            .frame(maxWidth: 200, maxHeight: 100)
                             .foregroundColor(.gray)
                     @unknown default:
                         EmptyView()
@@ -41,7 +37,18 @@ struct RecipeCardView: View {
                 }
             }
             
-            .frame(width: 100, height: 100)
+            .frame(width: 150, height: 150)
+            
+
+                Text(recipeName)
+                    .font(.caption)
+                    .foregroundStyle(.primary)
+                    .padding()
+                    .background(
+                        .thinMaterial
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            
         }
     }
 }

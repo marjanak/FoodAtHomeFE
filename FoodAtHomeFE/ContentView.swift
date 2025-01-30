@@ -26,7 +26,7 @@ struct ContentView: View {
 
                 RecipeView()
                         .tabItem {
-                            Label("Recipe",
+                            Label("Find Recipes",
                                   systemImage: "magnifyingglass")
                         }
                 RecipeView()
