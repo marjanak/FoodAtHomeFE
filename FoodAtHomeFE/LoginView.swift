@@ -10,7 +10,7 @@ import SwiftUI
 struct LoginView: View {
     @Environment(DataManager.self) var dataManager: DataManager
     
-    @State var username: String = ""
+    @State var username: String = "izzy"
     @State var password: String = "securepassword123"
     @State private var isRegistering = false
 
@@ -24,14 +24,14 @@ struct LoginView: View {
                 .autocorrectionDisabled()
                 .padding()
                 .background(Color.gray.opacity(0.2))
-                .cornerRadius(8)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
             
             SecureField("Password", text: $password)
                 .autocapitalization(.none)
                 .autocorrectionDisabled()
                 .padding()
                 .background(Color.gray.opacity(0.2))
-                .cornerRadius(8)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
             
             Button("Login") {
                 print("Continuing with username: \(username) password: \(password)")
@@ -43,7 +43,7 @@ struct LoginView: View {
             .padding()
             .background(Color.blue)
             .foregroundColor(.white)
-            .cornerRadius(8)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
             
         }
         .padding()

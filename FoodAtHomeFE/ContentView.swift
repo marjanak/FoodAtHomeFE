@@ -8,17 +8,46 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(DataManager.self) var dataManager: DataManager
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        if dataManager.signedIn {
+            TabView {
+                RecipeView()
+                        .tabItem {
+                            Label("My Recipes",
+                                  systemImage: "fork.knife.circle")
+                        }
+                PantryView()
+                    .tabItem {
+                        Label("My Pantry",
+                              systemImage: "carrot.fill")
+                    }
+
+                RecipeView()
+                        .tabItem {
+                            Label("Recipe",
+                                  systemImage: "magnifyingglass")
+                        }
+                RecipeView()
+                        .tabItem {
+                            Label("Notes",
+                                  systemImage: "square.and.pencil")
+                        }
+                }
+            
+//
+        } else {
+            LoginView()
         }
-        .padding()
+        
+        
+
+        
     }
 }
 
 #Preview {
     ContentView()
+        .environment(DataManager())
 }

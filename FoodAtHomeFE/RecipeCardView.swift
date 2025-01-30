@@ -18,7 +18,6 @@ struct RecipeCardView: View {
                     .font(.headline)
                     .foregroundColor(.blue)
             }
-            
             AsyncImage(url: imageURL) { phase in
                 switch phase {
                 case .empty:

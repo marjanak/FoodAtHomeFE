@@ -13,7 +13,7 @@ struct FoodAtHomeFEApp: App {
     
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            ContentView()
                 .environment(dataManager)
         }
     }

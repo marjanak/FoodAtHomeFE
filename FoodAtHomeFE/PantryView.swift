@@ -22,6 +22,7 @@ struct PantryView: View {
                             DetailView(name: ingredient.ingredient)
                         }
                     }
+                    .onDelete(perform: deleteIngredient)
                 }, header: {
                     ItemSectionHeader(symbolSystemName: "", headerText: "Select an item to find a recipe")
                 })
@@ -42,6 +43,17 @@ struct PantryView: View {
             }
         }
     }
+
+
+private func deleteIngredient(at offsets: IndexSet) {
+    for index in offsets {
+        let ingredient = dataManager.pantry[index]
+        print(index, ingredient)
+        Task {
+            await dataManager.deleteIngredient(ingredientID: ingredient.id)
+        }
+    }
+}
 }
 
 struct SubHeaderStyle: ViewModifier {
@@ -89,21 +101,3 @@ struct PantryView_Previews: PreviewProvider {
             .environment(DataManager())
     }
 }
-
-
-
-//import SwiftUI
-//
-//struct PantryView: View {
-//    var body: some View {
-//        NavigationStack {
-//            Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-//        }
-//        .navigationTitle("Pantry")
-//        .navigationBarTitleDisplayMode(.inline)
-//    }
-//}
-//
-//#Preview {
-//    PantryView()
-//}

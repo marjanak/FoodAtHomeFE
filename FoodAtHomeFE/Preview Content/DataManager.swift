@@ -45,16 +45,15 @@ class DataManager {
     
     func fetchPantry() async {
         let url = URL(string: "\(baseURL)/ingredients")!
-
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        
         let session = URLSession(configuration: .default)
         do {
             let (data, response) = try await session.data(for: request)
             // decode
             let decodedResponse = try JSONDecoder().decode(IngredientsResponse.self, from: data)
             pantry = decodedResponse.ingredients
+            print(pantry)
             
             // testing with prints
             for item in pantry {
@@ -68,23 +67,40 @@ class DataManager {
         }
     }
     
+    func deleteIngredient(ingredientID: Int) async {
+        let url = URL(string: "\(baseURL)/ingredients/\(ingredientID)")!
+        print(url)
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        let session = URLSession(configuration: .default)
+        do {
+            let (data, response) = try await session.data(for: request)
+            let jsonDataResponse = try JSONDecoder().decode(LoginResponse.self, from: data)
+            print("Message: \(jsonDataResponse.message)")
+            print("Response: \(response)")
+            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                pantry.removeAll() {$0.id == ingredientID}
+                print("Ingredient \(ingredientID) deleted successfully.")
+                print("HTTP Response: \(response)")
+            } else {
+                print("Failed to delete ingredient \(ingredientID).")
+            }
+        } catch {
+            print("Error deleting ingredient: \(error)")
+        }
+    }
+    
     func fetchRecipes() async {
         let url = URL(string: "\(baseURL)/all")!
-
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        
         let session = URLSession(configuration: .default)
         do {
             let (data, response) = try await session.data(for: request)
             
             // Decode the response
             let decodedResponse = try JSONDecoder().decode([Recipe].self, from: data)
-            
-            // Assuming you have a variable to store the recipes
             recipes = decodedResponse
-            
-            // Testing with prints
             for recipe in recipes {
                 print("Recipe ID: \(recipe.id), Name: \(recipe.name), Recipe ID: \(recipe.recipe_id), Foodie ID: \(recipe.foodie_id)")
             }
