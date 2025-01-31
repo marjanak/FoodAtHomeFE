@@ -21,9 +21,11 @@ struct RecipeView: View {
                 spacing: 19)
                 {
                     ForEach(dataManager.recipes, id: \.id) { recipe in
-                        RecipeCardView(recipeName: recipe.name, imageURL: URL(string: recipe.image))
+                        RecipeCardView(recipeName: recipe.name, imageURL: URL(string: recipe.image), id: recipe.id) { id in
+                            deleteRecipe(id: id)
+                        }
                     }
-                    .onDelete(perform: deleteRecipe)
+//                    .onDelete(perform: deleteRecipe)
                 }
             }
             .refreshable {
@@ -47,13 +49,10 @@ struct RecipeView: View {
             }
         }
     }
-    private func deleteRecipe(at offsets: IndexSet) {
-        for index in offsets {
-            let recipe = dataManager.recipes[index]
+    private func deleteRecipe(id: Int) {
             Task {
-                await dataManager.deleteRecipe(recipeID: recipe.id)
+                await dataManager.deleteRecipe(recipeID: id)
             }
-        }
     }
 }
 

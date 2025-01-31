@@ -10,6 +10,8 @@ import SwiftUI
 
 struct PantryView: View {
     @Environment(DataManager.self) var dataManager: DataManager
+    @State private var showPopUp  = false
+    @State private var pantryItem = ""
 
     
     var body: some View {
@@ -26,6 +28,19 @@ struct PantryView: View {
                 }, header: {
                     ItemSectionHeader(symbolSystemName: "", headerText: "Select an item to find a recipe")
                 })
+            }.popover(isPresented: $showPopUp){
+                VStack{
+                    TextField("Enter your pantry item", text: $pantryItem)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+                    
+                    Button("Save"){
+                        addPantryRecipe(item: pantryItem)
+                        showPopUp = false
+                        pantryItem = ""
+                    }
+                    
+                }
             }
             .task{
                 await dataManager.fetchPantry()
@@ -33,8 +48,8 @@ struct PantryView: View {
             .navigationTitle(Text("My Pantry"))
             .toolbar {
                 HStack {
-                    Button("Add Item") {
-                        print("pressed")
+                    Button("", systemImage: "plus.app.fill") {
+                        showPopUp = true
                     }
                     Button("Find Recipe") {
                         print("pressed")
@@ -44,7 +59,13 @@ struct PantryView: View {
         }
     }
 
+    private func addPantryRecipe(item: String) {
+            Task {
+                await dataManager.addPantryItem(pantryItem: item)
+            }
+    }
 
+    
 private func deleteIngredient(at offsets: IndexSet) {
     for index in offsets {
         let ingredient = dataManager.pantry[index]

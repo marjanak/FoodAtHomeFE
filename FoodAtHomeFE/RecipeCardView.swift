@@ -10,7 +10,9 @@ import SwiftUI
 struct RecipeCardView: View {
     let recipeName: String
     let imageURL: URL?
-    
+    let id: Int
+    var onDeleteTab: (Int) -> Void
+
     var body: some View {
         ZStack {
             NavigationLink(destination: DetailRecipeView(recipeName: recipeName)) {
@@ -23,8 +25,7 @@ struct RecipeCardView: View {
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                           
-                        //                        .clipped()
+
                     case .failure:
                         Image(systemName: "photo.fill")
                             .resizable()
@@ -51,13 +52,13 @@ struct RecipeCardView: View {
             
         }
         .clipped()
-        .overlay (alignment: .bottomTrailing) {
-            Button("", systemImage: "trash.fill") {
-                
+        .overlay (alignment: .topTrailing) {
+            Button("", systemImage: "x.square.fill") {
+                onDeleteTab(id)
             }
-            .padding(0.25)
-            .foregroundStyle(.secondary)
-            .backgroundStyle(.primary)
+//            .padding(0)
+            .background(Color(red: 207/255, green: 92/255, blue: 54/255))
+            .foregroundColor(.white)
             
         }
       

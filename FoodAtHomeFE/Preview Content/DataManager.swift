@@ -37,6 +37,13 @@ class DataManager {
             if jsonDataResponse.message.localizedCaseInsensitiveContains("logged in") {
                 signedIn = true
             }
+            if let httpResponse = response as? HTTPURLResponse {
+                if(httpResponse.statusCode != 200){
+                    loginError = "Oops! We couldn't log you in. Please double-check your email and password."
+                }else{
+                    loginError = ""
+                }
+            }
         } catch {
             print("Error with users/login call: \(error)")
             loginError = "Oops! We couldn't log you in. Please double-check your email and password."
@@ -129,5 +136,40 @@ class DataManager {
             print("Error deleting recipe: \(error)")
         }
     }
+    
+    
+    func addPantryItem(pantryItem: String) async {
+        let url = URL(string: "\(baseURL)/ingredients")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONEncoder().encode(IngredientRequest(name: pantryItem))
+        
+        // Build Session
+        let session = URLSession(configuration: .default)
+        do {
+            let (data, response) = try await session.data(for: request)
+            print("Data: \(data)")
+            let jsonDataResponse = try JSONDecoder().decode(AddIngredientsResponse.self, from: data)
+//            print("Message: \(jsonDataResponse.message)")
+            print("Response: \(response)")
+//            if jsonDataResponse.message.localizedCaseInsensitiveContains("updated") {
+////                signedIn = true
+//            }
+            if let httpResponse = response as? HTTPURLResponse {
+                if(httpResponse.statusCode == 200 || httpResponse.statusCode == 201){
+                    let ingredient = jsonDataResponse.ingredient
+                    pantry.append(ingredient)
+//                    loginError = "Oops! We couldn't log you in. Please double-check your email and password."
+                }else{
+//                    loginError = ""
+                }
+            }
+        } catch {
+            print("Error with users/login call: \(error)")
+            loginError = " We couldn't log you in. Please double-check your email and password."
+        }
+    }
+
     
 }

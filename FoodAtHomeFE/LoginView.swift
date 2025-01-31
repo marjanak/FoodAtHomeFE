@@ -16,7 +16,7 @@ struct LoginView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Image("logo")
+            Image("Logo")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 300, height: 300)
@@ -46,6 +46,7 @@ struct LoginView: View {
             .background(Color(red: 207/255, green: 92/255, blue: 54/255))
             .foregroundColor(.white)
             .clipShape(RoundedRectangle(cornerRadius: 8))
+            
             Text(dataManager.loginError)
                 .foregroundColor(.red)
                 .padding()

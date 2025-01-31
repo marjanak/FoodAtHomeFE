@@ -16,6 +16,17 @@ struct LoginResponse: Codable {
     let message: String
 }
 
+//pantry add
+struct AddIngredientsResponse: Codable {
+    let message: String
+    let ingredient: Ingredient
+}
+
+//pantry add
+struct IngredientRequest: Codable {
+    let name: String
+}
+
 struct IngredientsResponse: Codable {
     let ingredients: [Ingredient]
 }

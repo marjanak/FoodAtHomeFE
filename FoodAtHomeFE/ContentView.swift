@@ -24,7 +24,7 @@ struct ContentView: View {
                               systemImage: "carrot.fill")
                     }
 
-                RecipeView()
+                FindRecipeView()
                         .tabItem {
                             Label("Find Recipes",
                                   systemImage: "magnifyingglass")
