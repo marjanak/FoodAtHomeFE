@@ -26,11 +26,14 @@ struct RecipeView: View {
                     .onDelete(perform: deleteRecipe)
                 }
             }
-            .onAppear {
-                Task {
+            .refreshable {
+                await dataManager.fetchRecipes()
+            }
+//            .onAppear {
+            .task {
                     await dataManager.fetchRecipes()
                 }
-            }
+//            }
             .navigationTitle("My Recipes")
             .toolbar {
                 HStack {

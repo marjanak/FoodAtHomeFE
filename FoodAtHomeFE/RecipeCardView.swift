@@ -18,18 +18,18 @@ struct RecipeCardView: View {
                     switch phase {
                     case .empty:
                         ProgressView()
-                            .frame(maxWidth: 200, maxHeight: 100)
+                            
                     case .success(let image):
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                           
                         //                        .clipped()
                     case .failure:
                         Image(systemName: "photo.fill")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(maxWidth: 200, maxHeight: 100)
+                            
                             .foregroundColor(.gray)
                     @unknown default:
                         EmptyView()
@@ -37,19 +37,31 @@ struct RecipeCardView: View {
                 }
             }
             
-            .frame(width: 150, height: 150)
+            .frame(width: 200, height: 150)
             
-
-                Text(recipeName)
-                    .font(.caption)
-                    .foregroundStyle(.primary)
-                    .padding()
-                    .background(
-                        .thinMaterial
-                    )
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            
+            Text(recipeName)
+                .font(.caption)
+                .foregroundStyle(.primary)
+                .padding()
+                .background(
+                    .thinMaterial
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 10))
             
         }
+        .clipped()
+        .overlay (alignment: .bottomTrailing) {
+            Button("", systemImage: "trash.fill") {
+                
+            }
+            .padding(0.25)
+            .foregroundStyle(.secondary)
+            .backgroundStyle(.primary)
+            
+        }
+      
+        
     }
 }
 

@@ -16,9 +16,12 @@ struct LoginView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text(isRegistering ? "Register" : "Login")
-                .font(.largeTitle)
-            
+            Image("logo")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 300, height: 300)
+                .padding()
+
             TextField("Username", text: $username)
                 .autocapitalization(.none)
                 .autocorrectionDisabled()
@@ -34,17 +37,18 @@ struct LoginView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             
             Button(isRegistering ? "Register" : "Login") {
-                print("Continuing with username: \(username) password: \(password)")
                 Task {
                     await dataManager.signInWith(username: username, password: password)
                 }
             }
             .frame(maxWidth: .infinity)
             .padding()
-            .background(Color.blue)
+            .background(Color(red: 207/255, green: 92/255, blue: 54/255))
             .foregroundColor(.white)
             .clipShape(RoundedRectangle(cornerRadius: 8))
-            
+            Text(dataManager.loginError)
+                .foregroundColor(.red)
+                .padding()
         }
         .padding()
     }

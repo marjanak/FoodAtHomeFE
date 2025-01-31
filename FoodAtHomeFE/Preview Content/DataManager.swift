@@ -8,17 +8,16 @@
 import SwiftUI
 
 
-@Observable
+@MainActor @Observable
 class DataManager {
     let baseURL = URL(string: "http://127.0.0.1:5000")!
     var signedIn: Bool = false
     var pantry: [Ingredient] = []
     var recipes: [Recipe] = []
+    var loginError: String = ""
     
     func signInWith(username: String, password: String) async {
         let url = URL(string: "\(baseURL)/users/login")!
-        
-        // Body of the Request
         let loginRequest = LoginRequest(username: username, password: password)
         
         // Request
@@ -40,6 +39,7 @@ class DataManager {
             }
         } catch {
             print("Error with users/login call: \(error)")
+            loginError = "Oops! We couldn't log you in. Please double-check your email and password."
         }
     }
     
