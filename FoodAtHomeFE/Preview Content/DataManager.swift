@@ -15,6 +15,7 @@ class DataManager {
     var pantry: [Ingredient] = []
     var recipes: [Recipe] = []
     var loginError: String = ""
+    var recipesAPI: [RecipeAPI] = []
     
     func signInWith(username: String, password: String) async {
         let url = URL(string: "\(baseURL)/users/login")!
@@ -153,14 +154,10 @@ class DataManager {
             let jsonDataResponse = try JSONDecoder().decode(AddIngredientsResponse.self, from: data)
 //            print("Message: \(jsonDataResponse.message)")
             print("Response: \(response)")
-//            if jsonDataResponse.message.localizedCaseInsensitiveContains("updated") {
-////                signedIn = true
-//            }
             if let httpResponse = response as? HTTPURLResponse {
                 if(httpResponse.statusCode == 200 || httpResponse.statusCode == 201){
                     let ingredient = jsonDataResponse.ingredient
                     pantry.append(ingredient)
-//                    loginError = "Oops! We couldn't log you in. Please double-check your email and password."
                 }else{
 //                    loginError = ""
                 }
@@ -170,6 +167,37 @@ class DataManager {
             loginError = " We couldn't log you in. Please double-check your email and password."
         }
     }
-
+    
+    func fetchRecipesByIngredient(with ingredients: String) async {
+        guard var components = URLComponents(url: baseURL.appendingPathComponent("recipes"), resolvingAgainstBaseURL: false) else {
+            print("Failed to create URL components")
+            return
+        }
+        components.queryItems = [
+            URLQueryItem(name: "includeIngredients", value: ingredients)
+        ]
+        guard let url = components.url else {
+            print("Invalid URL after adding query items")
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        let session = URLSession(configuration: .default)
+        do {
+            let (data, response) = try await session.data(for: request)
+            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                let decodedResponse = try JSONDecoder().decode(RecipesAPIResponse.self, from: data)
+                self.recipesAPI = decodedResponse.recipes
+                print("Fetched \(self.recipes.count) recipes.")
+            } else {
+                print("Failed to fetch recipes. HTTP Response: \(response)")
+            }
+        } catch {
+            print("Error fetching recipes: \(error)")
+        }
+    }
+    
     
 }
