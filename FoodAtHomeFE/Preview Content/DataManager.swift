@@ -213,9 +213,10 @@ class DataManager {
             print("Invalid URL after adding query items")
             return
         }
-        
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
         
         let session = URLSession(configuration: .default)
         do {
@@ -238,5 +239,32 @@ class DataManager {
         }
     }
     
+    
+    func addRecipeItem(id: Int, name: String, recipe_id: Int, image: String) async {
+        let url = URL(string: "\(baseURL)/recipes")!
+        let recipeItem = Recipe(id: id, name: name, recipe_id: recipe_id, image: image)
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONEncoder().encode(recipeItem)
+        
+
+        let session = URLSession(configuration: .default)
+        do {
+            let (data, response) = try await session.data(for: request)
+            print("Data: \(data)")
+            let jsonDataResponse = try JSONDecoder().decode(RecipeResponse.self, from: data)
+            if let httpResponse = response as? HTTPURLResponse {
+                if(httpResponse.statusCode == 200 || httpResponse.statusCode == 201){
+                    recipes.append(jsonDataResponse.recipe)
+                }else{
+//                    print error
+                }
+            }
+        } catch {
+            print("Error with users/login call: \(error)")
+            loginError = " We couldn't log you in. Please double-check your email and password."
+        }
+    }
     
 }

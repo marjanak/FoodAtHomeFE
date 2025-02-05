@@ -6,6 +6,10 @@
 //
 import Foundation
 
+struct RecipeResponse: Codable {
+    let recipe: Recipe
+}
+
 struct RecipesResponse: Codable {
     let recipe: [Recipe] 
 }
@@ -16,3 +20,4 @@ struct Recipe: Codable, Identifiable {
     let recipe_id: Int
     let image: String
 }
+

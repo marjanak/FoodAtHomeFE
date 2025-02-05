@@ -18,7 +18,7 @@ struct RecipeView: View {
                     GridItem(),
                     GridItem()
                 ],
-                spacing: 19)
+                          spacing: 19)
                 {
                     ForEach(dataManager.recipes, id: \.id) { recipe in
                         RecipeCardView(recipeName: recipe.name, imageURL: URL(string: recipe.image), id: recipe.id) { id in
@@ -30,18 +30,18 @@ struct RecipeView: View {
             .refreshable {
                 await dataManager.fetchRecipes()
             }
-//            .onAppear {
+            //            .onAppear {
             .task {
-                    await dataManager.fetchRecipes()
-                }
-//            }
+                await dataManager.fetchRecipes()
+            }
+            //            }
             .navigationTitle("My Recipes")
         }
     }
     private func deleteRecipe(id: Int) {
-            Task {
-                await dataManager.deleteRecipe(recipeID: id)
-            }
+        Task {
+            await dataManager.deleteRecipe(recipeID: id)
+        }
     }
 }
 

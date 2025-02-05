@@ -28,15 +28,7 @@ struct FindRecipeView: View {
                 
                 Text("Servings: \(recipe.servings)")
                     .font(.subheadline)
-                
-                Text("Summary:")
-                    .font(.headline)
-                
-                HTMLStringView(htmlContent: recipe.summary)
-                    .font(.body)
-                Text(recipe.summary)
-                
-                // Ingredients Section
+                                
                 Text("Ingredients:")
                     .font(.headline)
                 ForEach(recipe.extendedIngredients, id: \.original) { ingredient in
@@ -44,7 +36,6 @@ struct FindRecipeView: View {
                         .font(.body)
                 }
                 
-                // Instructions Section
                 Text("Instructions:")
                     .font(.headline)
                 ForEach(Array(recipe.instructions.enumerated()), id: \.offset) { index, step in

@@ -52,7 +52,7 @@ struct RecipeCardView: View {
             
         }
         .clipped()
-        .overlay (alignment: .topTrailing) {
+        .overlay (alignment: .topLeading) {
             Button("", systemImage: "x.square.fill") {
                 onDeleteTab(id)
             }

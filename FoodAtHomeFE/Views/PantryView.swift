@@ -49,9 +49,6 @@ struct PantryView: View {
                     Button("", systemImage: "plus.app.fill") {
                         showPopUp = true
                     }
-                    Button("Find Recipe") {
-                        print("pressed")
-                    }
                 }
             }
         }
