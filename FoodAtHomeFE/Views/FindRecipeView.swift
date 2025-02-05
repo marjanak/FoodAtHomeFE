@@ -9,7 +9,7 @@
 
 import SwiftUI
 
-struct FindRecipeOpt: View {
+struct FindRecipeView: View {
     let recipe: RecipeAPI
     
     var body: some View {
@@ -33,10 +33,25 @@ struct FindRecipeOpt: View {
                     .font(.headline)
                 
                 HTMLStringView(htmlContent: recipe.summary)
-                Text(recipe.summary)
                     .font(.body)
+                Text(recipe.summary)
                 
-                // You can add additional recipe details here
+                // Ingredients Section
+                Text("Ingredients:")
+                    .font(.headline)
+                ForEach(recipe.extendedIngredients, id: \.original) { ingredient in
+                    Text("• \(ingredient.original)")
+                        .font(.body)
+                }
+                
+                // Instructions Section
+                Text("Instructions:")
+                    .font(.headline)
+                ForEach(Array(recipe.instructions.enumerated()), id: \.offset) { index, step in
+                    Text("\(index + 1). \(step)")
+                        .font(.body)
+                }
+                
             }
             .padding()
         }
@@ -45,25 +60,6 @@ struct FindRecipeOpt: View {
 }
 
 
-
-
-
-
-
-
-//import SwiftUI
-//
-//struct FindRecipeOpt: View {
-//    @Environment(DataManager.self) var dataManager: DataManager
-//    @State private var ingredient = ""
-//    @State var recipe: [RecipeAPI]
-//    
-//    var body: some View {
-//        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-//    }
-//}
-
-
 //#Preview {
-//    FindRecipeOpt(recipe: <#[RecipeAPI]#>)
+//    FindRecipeView(recipe: <#[RecipeAPI]#>)
 //}

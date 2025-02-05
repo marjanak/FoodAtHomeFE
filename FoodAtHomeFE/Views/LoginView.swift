@@ -37,19 +37,34 @@ struct LoginView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             
             Button(isRegistering ? "Register" : "Login") {
-                Task {
-                    await dataManager.signInWith(username: username, password: password)
+                if isRegistering {
+                    Task {
+                        await dataManager.register(username: username, password: password)
+                    }
+                } else {
+                    Task {
+                        await dataManager.signInWith(username: username, password: password)
+                    }
                 }
+
+                
             }
             .frame(maxWidth: .infinity)
             .padding()
             .background(Color(red: 207/255, green: 92/255, blue: 54/255))
-            .foregroundColor(.white)
+            .foregroundStyle(.white)
             .clipShape(RoundedRectangle(cornerRadius: 8))
             
             Text(dataManager.loginError)
                 .foregroundColor(.red)
                 .padding()
+            
+            Button(action: {
+                isRegistering.toggle()
+            }) {
+                Text(isRegistering ? "Click here to Login" : "Click here to register")
+                    .foregroundStyle(.blue)
+            }
         }
         .padding()
     }

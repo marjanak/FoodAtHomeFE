@@ -12,6 +12,7 @@ import SwiftUI
 class DataManager {
     let baseURL = URL(string: "http://127.0.0.1:5000")!
     var signedIn: Bool = false
+    var registered: Bool = false
     var pantry: [Ingredient] = []
     var recipes: [Recipe] = []
     var loginError: String = ""
@@ -32,7 +33,7 @@ class DataManager {
         do {
             let (data, response) = try await session.data(for: request)
             print("Data: \(data)")
-            let jsonDataResponse = try JSONDecoder().decode(LoginResponse.self, from: data)
+            let jsonDataResponse = try JSONDecoder().decode(Response.self, from: data)
             print("Message: \(jsonDataResponse.message)")
             print("Response: \(response)")
             if jsonDataResponse.message.localizedCaseInsensitiveContains("logged in") {
@@ -48,6 +49,38 @@ class DataManager {
         } catch {
             print("Error with users/login call: \(error)")
             loginError = "Oops! We couldn't log you in. Please double-check your email and password."
+        }
+    }
+    
+    func register(username: String, password: String) async {
+        let url = URL(string: "\(baseURL)/users/register")!
+        let loginRequest = LoginRequest(username: username, password: password)
+        
+        // Request
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONEncoder().encode(loginRequest)
+        
+        // Build Session
+        let session = URLSession(configuration: .default)
+        do {
+            let (data, response) = try await session.data(for: request)
+            print("Data: \(data)")
+            let jsonDataResponse = try JSONDecoder().decode(Response.self, from: data)
+            print("Message: \(jsonDataResponse.message)")
+            print("Response: \(response)")
+            if jsonDataResponse.message.localizedCaseInsensitiveContains("created") {
+                registered = true
+            }
+            if let httpResponse = response as? HTTPURLResponse {
+                if(httpResponse.statusCode != 200){
+                    loginError = "Registration failed. Please try again."
+                }
+            }
+        } catch {
+            print("Error with users/registration call: \(error)")
+            loginError = "Registration failed. Please try again."
         }
     }
     
@@ -83,7 +116,7 @@ class DataManager {
         let session = URLSession(configuration: .default)
         do {
             let (data, response) = try await session.data(for: request)
-            let jsonDataResponse = try JSONDecoder().decode(LoginResponse.self, from: data)
+            let jsonDataResponse = try JSONDecoder().decode(Response.self, from: data)
             print("Message: \(jsonDataResponse.message)")
             print("Response: \(response)")
             if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
@@ -123,7 +156,7 @@ class DataManager {
         let session = URLSession(configuration: .default)
         do {
             let (data, response) = try await session.data(for: request)
-            let jsonDataResponse = try JSONDecoder().decode(LoginResponse.self, from: data)
+            let jsonDataResponse = try JSONDecoder().decode(Response.self, from: data)
             print("Message: \(jsonDataResponse.message)")
             print("Response: \(response)")
             if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
@@ -190,7 +223,13 @@ class DataManager {
             if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
                 let decodedResponse = try JSONDecoder().decode(RecipesAPIResponse.self, from: data)
                 self.recipesAPI = decodedResponse.recipes
-                print("Fetched \(self.recipes.count) recipes.")
+                
+                if !self.recipesAPI.isEmpty {
+                    print("\(self.recipesAPI[0].title)")
+                } else {
+                    print("No recipes with \(ingredients)")
+                }
+                
             } else {
                 print("Failed to fetch recipes. HTTP Response: \(response)")
             }

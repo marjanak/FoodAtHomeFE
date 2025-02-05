@@ -25,7 +25,6 @@ struct RecipeView: View {
                             deleteRecipe(id: id)
                         }
                     }
-//                    .onDelete(perform: deleteRecipe)
                 }
             }
             .refreshable {
@@ -37,16 +36,6 @@ struct RecipeView: View {
                 }
 //            }
             .navigationTitle("My Recipes")
-            .toolbar {
-                HStack {
-                    Button("Find Pantry Recipe") {
-                        print("Pressed Find Pantry Recipe")
-                    }
-                    Button("Find Recipe") {
-                        print("Pressed Find Recipe")
-                    }
-                }
-            }
         }
     }
     private func deleteRecipe(id: Int) {

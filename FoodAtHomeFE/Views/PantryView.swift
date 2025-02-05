@@ -20,9 +20,7 @@ struct PantryView: View {
                 Section(content: {
                     ForEach(dataManager.pantry, id: \.id) {
                         ingredient in
-                        NavigationLink(ingredient.ingredient) {
-                            DetailView(name: ingredient.ingredient)
-                        }
+                            Text(ingredient.ingredient)
                     }
                     .onDelete(perform: deleteIngredient)
                 }, header: {
@@ -62,6 +60,7 @@ struct PantryView: View {
     private func addPantryRecipe(item: String) {
             Task {
                 await dataManager.addPantryItem(pantryItem: item)
+                await dataManager.fetchPantry()
             }
     }
 
