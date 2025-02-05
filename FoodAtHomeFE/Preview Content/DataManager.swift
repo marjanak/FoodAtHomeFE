@@ -17,6 +17,7 @@ class DataManager {
     var recipes: [Recipe] = []
     var loginError: String = ""
     var recipesAPI: [RecipeAPI] = []
+    var shoppinglist : [ShoppingNote] = []
     
     func signInWith(username: String, password: String) async {
         let url = URL(string: "\(baseURL)/users/login")!
@@ -266,5 +267,74 @@ class DataManager {
             loginError = " We couldn't log you in. Please double-check your email and password."
         }
     }
+    
+    func fetchShoppingList() async {
+            let url = URL(string: "\(baseURL)/notes")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "GET"
+            let session = URLSession(configuration: .default)
+            do {
+                let (data, response) = try await session.data(for: request)
+                
+                let decodedResponse = try JSONDecoder().decode(ShoppingNotesResponse.self, from: data)
+                shoppinglist = decodedResponse.shoppingnote
+
+                
+                for _ in shoppinglist {
+    //                print("ShoppingNote ID: \(item.id), Name: \(item.note)")
+                }
+                
+                print("HTTP Response: \(response)")
+                
+            } catch {
+                print("Error fetching pantry/notes: \(error)")
+            }
+        }
+        func addShoppingNote(note: String) async {
+            guard !note.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+                    
+            let url = URL(string: "\(baseURL)/notes")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                    
+            let newNote = ShoppingNoteRequest(note: note)
+            request.httpBody = try? JSONEncoder().encode(newNote)
+                    
+            let session = URLSession(configuration: .default)
+            do {
+                let (data, _) = try await session.data(for: request)
+                if let jsonString = String(data: data, encoding: .utf8) {
+                        print("Server Response: \(jsonString)")
+                    }
+    //            let addedNote = try JSONDecoder().decode(ShoppingNote.self, from: data)
+                let addedNote = ShoppingNote(id: (shoppinglist.last?.id ?? 0) + 1, note: newNote.note)
+
+                DispatchQueue.main.async {
+                    self.shoppinglist.append(addedNote)
+                        }
+                print("Added note: \(addedNote.note)")
+            } catch {
+                print("Error adding note: \(error)")
+                    }
+                }
+            
+        func deleteShoppingNote(id: Int) async {
+            let url = URL(string: "\(baseURL)/notes/\(id)")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "DELETE"
+            
+            let session = URLSession(configuration: .default)
+            do {
+                let (_, response) = try await session.data(for: request)
+                DispatchQueue.main.async {
+                    self.shoppinglist.removeAll { $0.id == id }
+                }
+                print("Deleted note with ID: \(id), Response: \(response)")
+            } catch {
+                print("Error deleting note: \(error)")
+            }
+        }
+
     
 }

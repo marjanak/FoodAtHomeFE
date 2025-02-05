@@ -10,8 +10,8 @@ import SwiftUI
 struct LoginView: View {
     @Environment(DataManager.self) var dataManager: DataManager
     
-    @State var username: String = "izzy"
-    @State var password: String = "securepassword123"
+    @State var username: String = "marjana"
+    @State var password: String = "abcd"
     @State private var isRegistering = false
 
     var body: some View {

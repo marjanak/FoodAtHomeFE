@@ -30,7 +30,7 @@ struct ContentView: View {
                             Label("Find Recipes",
                                   systemImage: "magnifyingglass")
                         }
-                    PantryView()
+                    ShoppingList()
                         .tabItem {
                             Label("Notes",
                                   systemImage: "square.and.pencil")
