@@ -10,7 +10,8 @@ import SwiftUI
 
 @MainActor @Observable
 class DataManager {
-    let baseURL = URL(string: "http://127.0.0.1:5000")!
+//    let baseURL = URL(string: "http://127.0.0.1:5000")!
+    let baseURL = URL(string: "https://food-at-home-api.onrender.com")!
     var signedIn: Bool = false
     var registered: Bool = false
     var pantry: [Ingredient] = []
