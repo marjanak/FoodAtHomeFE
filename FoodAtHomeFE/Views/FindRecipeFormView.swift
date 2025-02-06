@@ -64,7 +64,7 @@ struct FindRecipeFormView: View {
                                 .font(.subheadline)
                         }
                     }
-                    Spacer()
+                    padding(.vertical)
                 }
             }
             .navigationTitle("Find Recipes")

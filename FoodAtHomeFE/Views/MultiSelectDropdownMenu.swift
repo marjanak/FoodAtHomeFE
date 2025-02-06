@@ -33,7 +33,7 @@ struct MultiSelectDropdownMenu: View {
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
                 }
                 .padding()
-                .background(Color.blue.opacity(0.1))
+                .background(Color.green.opacity(0.1))
                 .cornerRadius(8)
             }
             

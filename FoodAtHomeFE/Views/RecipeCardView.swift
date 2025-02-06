@@ -52,13 +52,16 @@ struct RecipeCardView: View {
             
         }
         .clipped()
-        .overlay (alignment: .topLeading) {
-            Button("", systemImage: "x.square.fill") {
+        .overlay (alignment: .topTrailing) {
+            Button("", systemImage: "x.circle.fill") {
                 onDeleteTab(id)
             }
-//            .padding(0)
-            .background(Color(red: 207/255, green: 92/255, blue: 54/255))
+            .padding(0.25)
+//            .background(Color(red: 207/255, green: 92/255, blue: 54/255), ignoresSafeAreaEdges: [])
+            .background(Circle()
+                .fill(Color(red: 207/255, green: 92/255, blue: 54/255)))
             .foregroundColor(.white)
+            .imageScale(.large)
             
         }
       

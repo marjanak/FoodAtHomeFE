@@ -259,7 +259,6 @@ class DataManager {
                 if(httpResponse.statusCode == 200 || httpResponse.statusCode == 201){
                     recipes.append(jsonDataResponse.recipe)
                 }else{
-//                    print error
                 }
             }
         } catch {
