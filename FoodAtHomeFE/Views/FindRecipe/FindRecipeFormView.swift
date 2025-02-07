@@ -13,7 +13,7 @@ import SwiftUI
 struct FindRecipeFormView: View {
     @Environment(DataManager.self) var dataManager: DataManager
     @State private var ingredientsInput: String = ""
-    @State private var selectedOptions: Set<String> = [] // Pantry selections from the dropdown
+    @State private var selectedOptions: Set<String> = [] 
 
     var body: some View {
         NavigationStack {
@@ -53,6 +53,15 @@ struct FindRecipeFormView: View {
                 .foregroundColor(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .padding()
+                
+                .alert("Error", isPresented: Binding<Bool>(
+                    get: { dataManager.showAlertRecipeForm },
+                    set: { dataManager.showAlertRecipeForm = $0 }
+                )) {
+                    Button("OK", role: .cancel) { }
+                } message: {
+                    Text(dataManager.errorMsg)
+                }
                 
                 List(dataManager.recipesAPI, id: \.id) { recipe in
                     NavigationLink(destination: FindRecipeView(recipe: recipe)) {

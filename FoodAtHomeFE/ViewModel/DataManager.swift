@@ -17,8 +17,10 @@ class DataManager {
     var pantry: [Ingredient] = []
     var recipes: [Recipe] = []
     var loginError: String = ""
+    var errorMsg: String = ""
     var recipesAPI: [RecipeAPI] = []
     var shoppinglist : [ShoppingNote] = []
+    var showAlertRecipeForm: Bool = false
     
     func signInWith(username: String, password: String) async {
         let url = URL(string: "\(baseURL)/users/login")!
@@ -231,11 +233,9 @@ class DataManager {
                 if !self.recipesAPI.isEmpty {
                     print("\(self.recipesAPI[0].title)")
                 } else {
-                    print("No recipes with \(ingredients)")
+                    showAlertRecipeForm = true
+                    errorMsg = "No recipes with \(ingredients)"
                 }
-                
-            } else {
-                print("Failed to fetch recipes. HTTP Response: \(response)")
             }
         } catch {
             print("Error fetching recipes: \(error)")

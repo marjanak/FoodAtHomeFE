@@ -23,8 +23,6 @@ struct PantryView: View {
                         Text(ingredient.ingredient)
                     }
                     .onDelete(perform: deleteIngredient)
-                }, header: {
-                    ItemSectionHeader(symbolSystemName: "", headerText: "Select an item to find a recipe")
                 })
             }.popover(isPresented: $showPopUp){
                 VStack{

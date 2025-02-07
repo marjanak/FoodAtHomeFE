@@ -30,7 +30,6 @@ struct RecipeCardView: View {
                         Image(systemName: "photo.fill")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            
                             .foregroundColor(.gray)
                     @unknown default:
                         EmptyView()
@@ -39,6 +38,17 @@ struct RecipeCardView: View {
             }
             
             .frame(width: 200, height: 150)
+            .overlay (alignment: .topTrailing) {
+                Button("", systemImage: "x.circle.fill") {
+                    onDeleteTab(id)
+                }
+                .padding(0.25)
+                .background(Circle()
+                    .fill(Color(red: 207/255, green: 92/255, blue: 54/255)))
+                .foregroundColor(.white)
+                .imageScale(.large)
+                
+            }
             
             
             Text(recipeName)
@@ -52,18 +62,17 @@ struct RecipeCardView: View {
             
         }
         .clipped()
-        .overlay (alignment: .topTrailing) {
-            Button("", systemImage: "x.circle.fill") {
-                onDeleteTab(id)
-            }
-            .padding(0.25)
-//            .background(Color(red: 207/255, green: 92/255, blue: 54/255), ignoresSafeAreaEdges: [])
-            .background(Circle()
-                .fill(Color(red: 207/255, green: 92/255, blue: 54/255)))
-            .foregroundColor(.white)
-            .imageScale(.large)
-            
-        }
+//        .overlay (alignment: .topTrailing) {
+//            Button("", systemImage: "x.circle.fill") {
+//                onDeleteTab(id)
+//            }
+//            .padding(0.25)
+//            .background(Circle()
+//                .fill(Color(red: 207/255, green: 92/255, blue: 54/255)))
+//            .foregroundColor(.white)
+//            .imageScale(.large)
+//            
+//        }
       
         
     }
