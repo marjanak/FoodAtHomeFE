@@ -43,11 +43,13 @@ struct PantryView: View {
             }
             .navigationTitle(Text("My Pantry"))
             .toolbar {
-                HStack {
-                    Button("", systemImage: "plus.app.fill") {
+                    Button("Add Item") {
                         showPopUp = true
                     }
-                }
+                    .padding(.horizontal)
+                    .background(Color(red: 207/255, green: 92/255, blue: 54/255))
+                    .foregroundStyle(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
             }
         }
     }

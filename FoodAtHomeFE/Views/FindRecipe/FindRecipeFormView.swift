@@ -13,7 +13,7 @@ import SwiftUI
 struct FindRecipeFormView: View {
     @Environment(DataManager.self) var dataManager: DataManager
     @State private var ingredientsInput: String = ""
-    @State private var selectedOptions: Set<String> = [] 
+    @State private var selectedOptions: Set<String> = []
 
     var body: some View {
         NavigationStack {
@@ -64,7 +64,7 @@ struct FindRecipeFormView: View {
                 }
                 
                 List(dataManager.recipesAPI, id: \.id) { recipe in
-                    NavigationLink(destination: FindRecipeView(recipe: recipe)) {
+                    NavigationLink(destination: FindRecipeView(recipe: recipe, saveClicked: false)) {
                         VStack(alignment: .leading) {
                             Text(recipe.title)
                                 .font(.headline)

@@ -12,6 +12,7 @@ import SwiftUI
 struct FindRecipeView: View {
     @Environment(DataManager.self) var dataManager: DataManager
     let recipe: RecipeAPI
+    @State var saveClicked: Bool
     
     var body: some View {
         ScrollView {
@@ -29,7 +30,7 @@ struct FindRecipeView: View {
                 
                 Text("Servings: \(recipe.servings)")
                     .font(.subheadline)
-                                
+                
                 Text("Ingredients:")
                     .font(.headline)
                 ForEach(recipe.extendedIngredients, id: \.original) { ingredient in
@@ -49,11 +50,14 @@ struct FindRecipeView: View {
         }
         .navigationTitle(recipe.title)
         .toolbar {
-            HStack {
-                Button("Save", systemImage: "plus.app.fill") {
-                    addRecipe()
-                }
+            Button(saveClicked ? "Saved" : "Save") {
+                addRecipe()
+                saveClicked = true
             }
+            .padding(.horizontal)
+            .background(Color(red: 207/255, green: 92/255, blue: 54/255))
+            .foregroundStyle(.white)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
     }
     private func addRecipe() {
