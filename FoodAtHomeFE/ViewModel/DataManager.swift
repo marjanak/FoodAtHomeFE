@@ -144,10 +144,8 @@ class DataManager {
             let (data, response) = try await session.data(for: request)
             let decodedResponse = try JSONDecoder().decode(RecipesResponse.self, from: data)
             recipes = decodedResponse.recipe
-            for recipe in recipes {
-                print("Recipe ID: \(recipe.id), Name: \(recipe.name), Image: \(recipe.image), Recipe ID: \(recipe.recipe_id)")
-            }
-            print("HTTP Response: \(response)")
+            recipes = recipes.sorted { $0.favorite && !$1.favorite }
+
         } catch {
             print("Error fetching recipes: \(error)")
         }
