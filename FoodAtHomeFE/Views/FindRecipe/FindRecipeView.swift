@@ -17,6 +17,10 @@ struct FindRecipeView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
+                Text(recipe.title)
+                    .font(.title)
+                    .bold()
+                
                 AsyncImage(url: URL(string: recipe.image)) { image in
                     image
                         .resizable()
@@ -31,12 +35,26 @@ struct FindRecipeView: View {
                 Text("Servings: \(recipe.servings)")
                     .font(.subheadline)
                 
+                Spacer()
+                
                 Text("Ingredients:")
                     .font(.headline)
                 ForEach(recipe.extendedIngredients, id: \.original) { ingredient in
-                    Text("• \(ingredient.original)")
-                        .font(.body)
+                    HStack {
+                        Text("• \(ingredient.original)")
+                            .font(.body)
+                        Spacer()
+                        Button(action: {
+                            Task {
+                                await dataManager.addShoppingNote(note: ingredient.original)
+                            }
+                        }) {
+                            Image(systemName: "cart.fill.badge.plus")
+                        }
+                    }
                 }
+                
+                Spacer()
                 
                 Text("Instructions:")
                     .font(.headline)
@@ -48,7 +66,6 @@ struct FindRecipeView: View {
             }
             .padding()
         }
-        .navigationTitle(recipe.title)
         .toolbar {
             Button(saveClicked ? "Saved" : "Save") {
                 addRecipe()
