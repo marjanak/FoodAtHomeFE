@@ -10,6 +10,7 @@
 import SwiftUI
 
 struct FindRecipeView: View {
+    @Environment(DataManager.self) var dataManager: DataManager
     let recipe: RecipeAPI
     
     var body: some View {
@@ -47,6 +48,18 @@ struct FindRecipeView: View {
             .padding()
         }
         .navigationTitle(recipe.title)
+        .toolbar {
+            HStack {
+                Button("Save", systemImage: "plus.app.fill") {
+                    addRecipe()
+                }
+            }
+        }
+    }
+    private func addRecipe() {
+        Task {
+            await dataManager.addRecipeItem(name: recipe.title, recipe_id: recipe.id, image: recipe.image)
+        }
     }
 }
 

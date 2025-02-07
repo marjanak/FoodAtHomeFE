@@ -12,7 +12,7 @@ struct PantryView: View {
     @Environment(DataManager.self) var dataManager: DataManager
     @State private var showPopUp  = false
     @State private var pantryItem = ""
-
+    
     
     var body: some View {
         NavigationStack {
@@ -20,7 +20,7 @@ struct PantryView: View {
                 Section(content: {
                     ForEach(dataManager.pantry, id: \.id) {
                         ingredient in
-                            Text(ingredient.ingredient)
+                        Text(ingredient.ingredient)
                     }
                     .onDelete(perform: deleteIngredient)
                 }, header: {
@@ -53,23 +53,23 @@ struct PantryView: View {
             }
         }
     }
-
-    private func addPantryRecipe(item: String) {
-            Task {
-                await dataManager.addPantryItem(pantryItem: item)
-                await dataManager.fetchPantry()
-            }
-    }
-
     
-private func deleteIngredient(at offsets: IndexSet) {
-    for index in offsets {
-        let ingredient = dataManager.pantry[index]
+    private func addPantryRecipe(item: String) {
         Task {
-            await dataManager.deleteIngredient(ingredientID: ingredient.id)
+            await dataManager.addPantryItem(pantryItem: item)
+            await dataManager.fetchPantry()
         }
     }
-}
+    
+    
+    private func deleteIngredient(at offsets: IndexSet) {
+        for index in offsets {
+            let ingredient = dataManager.pantry[index]
+            Task {
+                await dataManager.deleteIngredient(ingredientID: ingredient.id)
+            }
+        }
+    }
 }
 
 struct SubHeaderStyle: ViewModifier {
@@ -78,7 +78,7 @@ struct SubHeaderStyle: ViewModifier {
             .font(.subheadline)
             .fontWeight(.heavy)
             .foregroundStyle(Color.black)
-//            .textCase(.uppercase)
+        //            .textCase(.uppercase)
     }
 }
 

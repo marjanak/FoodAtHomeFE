@@ -208,6 +208,7 @@ class DataManager {
             print("Failed to create URL components")
             return
         }
+
         components.queryItems = [
             URLQueryItem(name: "includeIngredients", value: ingredients)
         ]
@@ -242,9 +243,9 @@ class DataManager {
     }
     
     
-    func addRecipeItem(id: Int, name: String, recipe_id: Int, image: String) async {
+    func addRecipeItem(name: String, recipe_id: Int, image: String) async {
         let url = URL(string: "\(baseURL)/recipes")!
-        let recipeItem = Recipe(id: id, name: name, recipe_id: recipe_id, image: image)
+        let recipeItem = Recipe(id: 0, name: name, recipe_id: recipe_id, image: image, favorite: false)
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
