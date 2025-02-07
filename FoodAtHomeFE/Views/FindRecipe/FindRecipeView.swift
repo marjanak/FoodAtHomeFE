@@ -49,7 +49,7 @@ struct FindRecipeView: View {
                                 await dataManager.addShoppingNote(note: ingredient.original)
                             }
                         }) {
-                            Image(systemName: "cart.fill.badge.plus")
+                            Image(systemName: "note.text.badge.plus")
                         }
                     }
                 }
