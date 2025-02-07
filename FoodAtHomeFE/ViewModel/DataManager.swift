@@ -141,7 +141,7 @@ class DataManager {
         request.httpMethod = "GET"
         let session = URLSession(configuration: .default)
         do {
-            let (data, response) = try await session.data(for: request)
+            let (data, _) = try await session.data(for: request)
             let decodedResponse = try JSONDecoder().decode(RecipesResponse.self, from: data)
             recipes = decodedResponse.recipe
             recipes = recipes.sorted { $0.favorite && !$1.favorite }
