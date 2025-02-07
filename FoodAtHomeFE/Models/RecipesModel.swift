@@ -19,6 +19,6 @@ struct Recipe: Codable, Identifiable {
     let name: String
     let recipe_id: Int
     let image: String
-    let favorite: Bool?
+    let favorite: Bool
 }
 

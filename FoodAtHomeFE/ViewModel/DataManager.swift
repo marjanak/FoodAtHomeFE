@@ -175,6 +175,26 @@ class DataManager {
         }
     }
     
+    func updateFavorite(recipeID: Int) async {
+        guard let url = URL(string: "\(baseURL)/recipes/\(recipeID)") else {
+                print("Invalid URL for recipe ID \(recipeID)")
+                return
+            }
+        var request = URLRequest(url: url)
+        request.httpMethod = "PATCH"
+  
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            let updatedRecipe = try JSONDecoder().decode(Recipe.self, from: data)
+            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                if let index = recipes.firstIndex(where: { $0.id == recipeID }) {
+                    recipes[index] = updatedRecipe
+                }
+            }
+            } catch {
+            print("Error updating favorite: \(error)")
+        }
+    }
     
     func addPantryItem(pantryItem: String) async {
         let url = URL(string: "\(baseURL)/ingredients")!

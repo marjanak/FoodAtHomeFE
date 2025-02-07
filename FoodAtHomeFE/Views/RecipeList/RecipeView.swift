@@ -21,9 +21,16 @@ struct RecipeView: View {
                           spacing: 19)
                 {
                     ForEach(dataManager.recipes, id: \.id) { recipe in
-                        RecipeCardView(recipeName: recipe.name, imageURL: URL(string: recipe.image), id: recipe.id) { id in
-                            deleteRecipe(id: id)
+                        RecipeCardView(recipeName: recipe.name, imageURL: URL(string: recipe.image),
+                                       id: recipe.id,
+                                       favorite: recipe.favorite,
+                                       onDeleteTab: { id in
+                                        deleteRecipe(id: id)
+                        },
+                                       onFavorite: { id in
+                                        updateFavorite(id: id)
                         }
+                        )
                     }
                 }
             }
@@ -41,6 +48,11 @@ struct RecipeView: View {
     private func deleteRecipe(id: Int) {
         Task {
             await dataManager.deleteRecipe(recipeID: id)
+        }
+    }
+    private func updateFavorite(id: Int) {
+        Task {
+            await dataManager.updateFavorite(recipeID: id)
         }
     }
 }
