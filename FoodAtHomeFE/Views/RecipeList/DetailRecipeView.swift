@@ -27,7 +27,7 @@ import SwiftUI
 
 struct DetailRecipeView: View {
     @Environment(DataManager.self) var dataManager: DataManager
-    let recipeID: Int
+    let recipeId: Int
     
     var body: some View {
         VStack {
@@ -79,7 +79,7 @@ struct DetailRecipeView: View {
         }
         .onAppear {
             Task {
-                await dataManager.fetchdetailrecipe(id: recipeID)
+                await dataManager.fetchdetailrecipe(id: recipeId)
             }
         }
         .navigationTitle("Recipe Details")

@@ -14,13 +14,13 @@ struct RecipeCardView: View {
     let favorite: Bool
     var onDeleteTab: (Int) -> Void
     var onFavorite: (Int) -> Void
-    var recipeID : Int
+    var recipeId : Int
     
     var body: some View {
         ZStack {
 //            NavigationLink(destination: DetailRecipeView(recipeName: recipeName)) {
 //            I changed the line above and added the line below
-            NavigationLink(destination: DetailRecipeView(recipeID: recipeID)) {
+            NavigationLink(destination: DetailRecipeView(recipeId: recipeId)) {
                 AsyncImage(url: imageURL) { phase in
                     switch phase {
                     case .empty:

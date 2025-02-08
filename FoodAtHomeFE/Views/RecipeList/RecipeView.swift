@@ -30,7 +30,8 @@ struct RecipeView: View {
                         },
                                        onFavorite: { id in
                                         updateFavorite(id: id)
-                        }
+                        },
+                                       recipeId: recipe.recipe_id
                         )
                     }
                 }

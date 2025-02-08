@@ -11,10 +11,6 @@ struct DetailRecipeResponse: Codable {
     let recipes : [RecipeData]
 }
 
-//struct RecipesData: Codable {
-//    let recipes : [RecipeData]
-//}
-
 struct RecipeData : Codable {
     let extendedIngredients : [ExtendedIngredient]
     let id : Int
