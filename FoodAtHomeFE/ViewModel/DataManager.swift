@@ -21,6 +21,7 @@ class DataManager {
     var recipesAPI: [RecipeAPI] = []
     var shoppinglist : [ShoppingNote] = []
     var showAlertRecipeForm: Bool = false
+    var recipedata : RecipeData?
     
     func signInWith(username: String, password: String) async {
         let url = URL(string: "\(baseURL)/users/login")!
@@ -354,6 +355,25 @@ class DataManager {
                 print("Error deleting note: \(error)")
             }
         }
-
+    func fetchdetailrecipe(id: Int) async {
+            let url = URL(string: "\(baseURL)/recipes/\(id)")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "GET"
+            let session = URLSession(configuration: .default)
+            do {
+                let (data, response) = try await session.data(for: request)
+                
+                let decodedResponse = try JSONDecoder().decode(DetailRecipeResponse.self, from: data)
+                recipedata = decodedResponse.recipes.first
+                
+                
+                
+                print("HTTP Response: \(response)")
+                
+            } catch {
+                print("Error fetching recipedata/recipes: \(error)")
+            }
+            
+        }
     
 }
