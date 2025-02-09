@@ -30,7 +30,8 @@ struct DetailRecipeView: View {
     let recipeId: Int
     
     var body: some View {
-        VStack {
+        ScrollView {
+            VStack {
             if let recipe = dataManager.recipedata {
                 AsyncImage(url: URL(string: recipe.image)) { image in
                     image.resizable()
@@ -52,16 +53,22 @@ struct DetailRecipeView: View {
                 Text("Ready in \(recipe.readyInMinutes) minutes")
                     .font(.headline)
                     .foregroundColor(.secondary)
-                           
+                
                 Text("Ingredients:")
                     .font(.headline)
                     .bold()
                     .padding(.top, 10)
-                ForEach(recipe.extendedIngredients, id: \.original) { ingredient in
-                    Text("\(ingredient.original)")
-                        .font(.body)
-                }
-                .frame(height: 200)
+                Text("Total Ingredients: \(recipe.extendedIngredients.count)")
+                
+              VStack(alignment: .leading, spacing: 5) {
+                                        ForEach(recipe.extendedIngredients.indices, id: \.self) { index in
+                                            HStack(alignment: .top) {
+                                                Text("• ")
+                                                Text(recipe.extendedIngredients[index].original)
+                                            }
+                                        }
+                                    }
+                
                 
                 Text("Instructions")
                     .font(.title2)
@@ -69,13 +76,14 @@ struct DetailRecipeView: View {
                     .padding(.top, 10)
                 
                 ScrollView {
-                    Text(recipe.instructions)
+                    Text(recipe.instructions.joined(separator: "\n"))
                         .padding()
                         .multilineTextAlignment(.leading)
                 }
             } else {
                 ProgressView("Loading Recipe...")
             }
+        }
         }
         .onAppear {
             Task {

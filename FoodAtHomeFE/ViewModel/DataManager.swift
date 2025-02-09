@@ -361,19 +361,26 @@ class DataManager {
             request.httpMethod = "GET"
             let session = URLSession(configuration: .default)
             do {
-                let (data, response) = try await session.data(for: request)
+                let (data, _) = try await session.data(for: request)
+                
+                if let jsonString = String(data: data, encoding: .utf8) {
+                        print("Full API Response: \(jsonString)")
+                    }
                 
                 let decodedResponse = try JSONDecoder().decode(DetailRecipeResponse.self, from: data)
-                recipedata = decodedResponse.recipes.first
+                recipedata = decodedResponse.recipes
                 
+                print("Decoded Ingredients: \(recipedata?.extendedIngredients.count ?? 0) items")
+                } catch {
+                    print("Error fetching recipedata/recipes: \(error)")
+                }
                 
-                
-                print("HTTP Response: \(response)")
-                
-            } catch {
-                print("Error fetching recipedata/recipes: \(error)")
-            }
-            
+//                print("HTTP Response: \(response)")
+//                
+//            } catch {
+//                print("Error fetching recipedata/recipes: \(error)")
+//            }
+//            
         }
     
 }
