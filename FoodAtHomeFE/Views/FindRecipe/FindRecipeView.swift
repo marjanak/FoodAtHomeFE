@@ -84,7 +84,3 @@ struct FindRecipeView: View {
     }
 }
 
-
-//#Preview {
-//    FindRecipeView(recipe: <#[RecipeAPI]#>)
-//}

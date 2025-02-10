@@ -10,7 +10,6 @@ import SwiftUI
 
 @MainActor @Observable
 class DataManager {
-//    let baseURL = URL(string: "http://127.0.0.1:5000")!
     let baseURL = URL(string: "https://food-at-home-api.onrender.com")!
     var signedIn: Bool = false
     var registered: Bool = false
@@ -26,21 +25,15 @@ class DataManager {
     func signInWith(username: String, password: String) async {
         let url = URL(string: "\(baseURL)/users/login")!
         let loginRequest = LoginRequest(username: username, password: password)
-        
-        // Request
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try? JSONEncoder().encode(loginRequest)
         
-        // Build Session
         let session = URLSession(configuration: .default)
         do {
             let (data, response) = try await session.data(for: request)
-            print("Data: \(data)")
             let jsonDataResponse = try JSONDecoder().decode(Response.self, from: data)
-            print("Message: \(jsonDataResponse.message)")
-            print("Response: \(response)")
             if jsonDataResponse.message.localizedCaseInsensitiveContains("logged in") {
                 signedIn = true
             }
@@ -60,14 +53,10 @@ class DataManager {
     func register(username: String, password: String) async {
         let url = URL(string: "\(baseURL)/users/register")!
         let loginRequest = LoginRequest(username: username, password: password)
-        
-        // Request
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try? JSONEncoder().encode(loginRequest)
-        
-        // Build Session
         let session = URLSession(configuration: .default)
         do {
             let (data, response) = try await session.data(for: request)
@@ -77,6 +66,7 @@ class DataManager {
             print("Response: \(response)")
             if jsonDataResponse.message.localizedCaseInsensitiveContains("created") {
                 registered = true
+                loginError = ""
             }
             if let httpResponse = response as? HTTPURLResponse {
                 if(httpResponse.statusCode != 200){
@@ -89,27 +79,63 @@ class DataManager {
         }
     }
     
+    func logout() async {
+        let url = URL(string: "\(baseURL)/users/logout")!
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        let session = URLSession(configuration: .default)
+        signedIn = false
+        print(signedIn)
+        
+        do {
+            let (data, _) = try await session.data(for: request)
+            let jsonResponse = try JSONDecoder().decode(Response.self, from: data)
+            
+            if jsonResponse.message.localizedCaseInsensitiveContains("logged out") {
+                signedIn = false
+                errorMsg = ""
+                loginError = ""
+            }
+        } catch {
+            loginError = "Logout failed. Please try again."
+        }
+    }
+    
     func fetchPantry() async {
         let url = URL(string: "\(baseURL)/ingredients")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         let session = URLSession(configuration: .default)
         do {
-            let (data, response) = try await session.data(for: request)
-            // decode
+            let (data, _) = try await session.data(for: request)
             let decodedResponse = try JSONDecoder().decode(IngredientsResponse.self, from: data)
             pantry = decodedResponse.ingredients
-            print(pantry)
-            
-            // testing with prints
-            for item in pantry {
-                print("Ingredient ID: \(item.id), Name: \(item.ingredient)")
-            }
-            
-            print("HTTP Response: \(response)")
             
         } catch {
             print("Error fetching pantry/ingredients: \(error)")
+        }
+    }
+    
+    func updateExpirationDate(ingredientID: Int, expirationDate: String) async {
+        let url = URL(string: "\(baseURL)/useringredients/\(ingredientID)")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONEncoder().encode(UserIngredient(expiration_date: expirationDate))
+        let session = URLSession(configuration: .default)
+        do {
+            let (data, response) = try await session.data(for: request)
+            let _ = try JSONDecoder().decode(Response.self, from: data)
+            if let httpResponse = response as? HTTPURLResponse {
+                if(httpResponse.statusCode == 200){
+                    print("updated")
+                }
+            }
+        } catch {
+            print("Error with users/login call: \(error)")
+            loginError = " We couldn't log you in. Please double-check your email and password."
         }
     }
     
@@ -121,15 +147,9 @@ class DataManager {
         let session = URLSession(configuration: .default)
         do {
             let (data, response) = try await session.data(for: request)
-            let jsonDataResponse = try JSONDecoder().decode(Response.self, from: data)
-            print("Message: \(jsonDataResponse.message)")
-            print("Response: \(response)")
+            let _ = try JSONDecoder().decode(Response.self, from: data)
             if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
                 pantry.removeAll() {$0.id == ingredientID}
-                print("Ingredient \(ingredientID) deleted successfully.")
-                print("HTTP Response: \(response)")
-            } else {
-                print("Failed to delete ingredient \(ingredientID).")
             }
         } catch {
             print("Error deleting ingredient: \(error)")
@@ -159,15 +179,9 @@ class DataManager {
         let session = URLSession(configuration: .default)
         do {
             let (data, response) = try await session.data(for: request)
-            let jsonDataResponse = try JSONDecoder().decode(Response.self, from: data)
-            print("Message: \(jsonDataResponse.message)")
-            print("Response: \(response)")
+            let _ = try JSONDecoder().decode(Response.self, from: data)
             if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
                 recipes.removeAll() {$0.id == recipeID}
-                print("Ingredient \(recipeID) deleted successfully.")
-                print("HTTP Response: \(response)")
-            } else {
-                print("Failed to delete recipe \(recipeID).")
             }
         } catch {
             print("Error deleting recipe: \(error)")
@@ -195,34 +209,39 @@ class DataManager {
         }
     }
     
-    func addPantryItem(pantryItem: String) async {
-        let url = URL(string: "\(baseURL)/ingredients")!
+    func addPantryItem(pantryItem: String, expirationDate: Date?) async {
+        guard let url = URL(string: "\(baseURL)/ingredients") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try? JSONEncoder().encode(IngredientRequest(name: pantryItem))
         
-        // Build Session
-        let session = URLSession(configuration: .default)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let expirationDateString = expirationDate != nil ? formatter.string(from: expirationDate!) : nil
+        
+        let ingredientRequest = IngredientRequest(ingredient: pantryItem, expirationDate: expirationDateString)
+        
         do {
-            let (data, response) = try await session.data(for: request)
-            print("Data: \(data)")
-            let jsonDataResponse = try JSONDecoder().decode(AddIngredientsResponse.self, from: data)
-//            print("Message: \(jsonDataResponse.message)")
-            print("Response: \(response)")
-            if let httpResponse = response as? HTTPURLResponse {
-                if(httpResponse.statusCode == 200 || httpResponse.statusCode == 201){
-                    let ingredient = jsonDataResponse.ingredient
-                    pantry.append(ingredient)
-                }else{
-//                    loginError = ""
-                }
+            request.httpBody = try JSONEncoder().encode(ingredientRequest)
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                print("Invalid response type")
+                return
+            }
+            
+            if (200...299).contains(httpResponse.statusCode) {
+                let decodedResponse = try JSONDecoder().decode(AddIngredientsResponse.self, from: data)
+                print("Success: \(decodedResponse.message)")
+            } else {
+                let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: data)
+                print("Server Error: \(errorResponse.message)")
             }
         } catch {
-            print("Error with users/login call: \(error)")
-            loginError = " We couldn't log you in. Please double-check your email and password."
+            print("Error adding ingredient: \(error)")
         }
     }
+    
     
     func fetchRecipesByIngredient(with ingredients: String) async {
         guard var components = URLComponents(url: baseURL.appendingPathComponent("recipes"), resolvingAgainstBaseURL: false) else {
@@ -240,8 +259,6 @@ class DataManager {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        
         let session = URLSession(configuration: .default)
         do {
             let (data, response) = try await session.data(for: request)
@@ -283,8 +300,7 @@ class DataManager {
                 }
             }
         } catch {
-            print("Error with users/login call: \(error)")
-            loginError = " We couldn't log you in. Please double-check your email and password."
+            print(error)
         }
     }
     
@@ -294,18 +310,9 @@ class DataManager {
             request.httpMethod = "GET"
             let session = URLSession(configuration: .default)
             do {
-                let (data, response) = try await session.data(for: request)
-                
+                let (data, _) = try await session.data(for: request)
                 let decodedResponse = try JSONDecoder().decode(ShoppingNotesResponse.self, from: data)
                 shoppinglist = decodedResponse.shoppingnote
-
-                
-                for _ in shoppinglist {
-    //                print("ShoppingNote ID: \(item.id), Name: \(item.note)")
-                }
-                
-                print("HTTP Response: \(response)")
-                
             } catch {
                 print("Error fetching pantry/notes: \(error)")
             }

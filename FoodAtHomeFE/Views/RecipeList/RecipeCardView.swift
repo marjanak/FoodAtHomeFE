@@ -18,8 +18,6 @@ struct RecipeCardView: View {
     
     var body: some View {
         ZStack {
-//            NavigationLink(destination: DetailRecipeView(recipeName: recipeName)) {
-//            I changed the line above and added the line below
             NavigationLink(destination: DetailRecipeView(recipeId: recipeId)) {
                 AsyncImage(url: imageURL) { phase in
                     switch phase {
@@ -76,28 +74,10 @@ struct RecipeCardView: View {
                     .thinMaterial
                 )
                 .clipShape(RoundedRectangle(cornerRadius: 10))
+                .frame(maxWidth: 200, maxHeight: 150)
             
         }
         .clipped()
-        //        .overlay (alignment: .topTrailing) {
-        //            Button("", systemImage: "x.circle.fill") {
-        //                onDeleteTab(id)
-        //            }
-        //            .padding(0.25)
-        //            .background(Circle()
-        //                .fill(Color(red: 207/255, green: 92/255, blue: 54/255)))
-        //            .foregroundColor(.white)
-        //            .imageScale(.large)
-        //
-        //        }
-        
-        
     }
 }
 
-//#Preview {
-//    RecipeCardView(
-//        recipeName: "Spaghetti with Meatballs",
-//        imageURL: URL(string: "https://img.spoonacular.com/recipes/673463-312x231.jpg")
-//    )
-//}

@@ -6,22 +6,30 @@
 //
 import Foundation
 
-//pantry add
-struct AddIngredientsResponse: Codable {
+struct ErrorResponse: Codable {
     let message: String
-    let ingredient: Ingredient
 }
 
-//pantry add
-struct IngredientRequest: Codable {
-    let name: String
+struct Ingredient: Codable, Identifiable {
+    let id: Int
+    let ingredient: String
+    let expiration_date: String?
 }
 
 struct IngredientsResponse: Codable {
     let ingredients: [Ingredient]
 }
 
-struct Ingredient: Codable, Identifiable {
-    let id: Int
+struct IngredientRequest: Codable {
     let ingredient: String
+    let expirationDate: String?
+}
+
+struct AddIngredientsResponse: Codable {
+    let message: String
+    let ingredient: Ingredient
+}
+
+struct UserIngredient: Codable {
+    let expiration_date: String
 }

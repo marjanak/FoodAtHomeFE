@@ -19,12 +19,10 @@ struct FindRecipeFormView: View {
         NavigationStack {
             Form {
                 Section("Enter ingredients to search for a recipe"){
-                    TextField("Apple, Sugar, Flour", text: $ingredientsInput)
+                    TextField("Apple Sugar", text: $ingredientsInput)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding(.horizontal)
                 }
-                Text("OR")
-                    .font(.headline)
 
                 Section("Select pantry items to search for a recipe") {
                     MultiSelectDropdownMenu(selectedOptions: $selectedOptions)

@@ -18,7 +18,9 @@ struct LogoutView: View {
                 .padding()
             
             Button(action: {
-                dataManager.signedIn = false
+                Task {
+                    await dataManager.logout()
+                }
             }) {
                 Text("Logout")
                     .bold()

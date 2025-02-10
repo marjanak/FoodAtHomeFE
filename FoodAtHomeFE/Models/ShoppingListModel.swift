@@ -12,8 +12,7 @@ struct ShoppingNotesResponse: Codable {
 
 
 struct ShoppingNoteRequest: Codable {
-    let note: String
-    
+    let note: String    
 }
 
 struct ShoppingNote: Codable, Identifiable {
