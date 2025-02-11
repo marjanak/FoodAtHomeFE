@@ -5,6 +5,8 @@ they what based on the ingredients they want to use, users can also login and sa
 they can manage their pantry items and also create a shopping list.The app is built using Swift and interacts with a 
 Flask backend deployed on Render to handle data storage and processing.
 
+<img src="/Images/recipe.png" alt="Recipe" width="250" height="500">.  <img src="/Images/recipeSearch.png" alt="Recipe Search" width="250" height="500">
+
 # Features
 
 1.Generate food recipes given ingredients.
