@@ -19,7 +19,7 @@ struct PantryView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section {
+                Section("Add Pantry Items & Never Miss an Expiration Date") {
                     ForEach(dataManager.pantry, id: \.id) { ingredient in
                         PantryRowView(ingredient: ingredient)
                             .onTapGesture {
