@@ -61,7 +61,7 @@ struct ShoppingList: View {
                .task {
                    await dataManager.fetchShoppingList()
                }
-               .navigationTitle("My ShoppingNote")
+               .navigationTitle("Shopping Notes")
            }
        }
    }
