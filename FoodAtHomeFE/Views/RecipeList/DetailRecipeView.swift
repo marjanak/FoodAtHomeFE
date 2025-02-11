@@ -36,25 +36,35 @@ struct DetailRecipeView: View {
                 Text("Total Ingredients: \(recipe.extendedIngredients.count)")
                 
               VStack(alignment: .leading, spacing: 5) {
-                                        ForEach(recipe.extendedIngredients.indices, id: \.self) { index in
-                                            HStack(alignment: .top) {
-                                                Text("• ")
-                                                Text(recipe.extendedIngredients[index].original)
-                                            }
-                                        }
-                                    }
+                  Text("Ingredients:")
+                      .font(.headline)
+                  ForEach(recipe.extendedIngredients, id: \.original) { ingredient in
+                      HStack {
+                          Text("• \(ingredient.original)")
+                              .font(.body)
+                          Spacer()
+                          Button(action: {
+                              Task {
+                                  await dataManager.addShoppingNote(note: ingredient.original)
+                              }
+                          }) {
+                              Image(systemName: "note.text.badge.plus")
+                          }
+                      }
+                  }
+                                    
                 
+                Spacer()
                 
-                Text("Instructions")
-                    .font(.title2)
-                    .bold()
-                    .padding(.top, 10)
-                
-                ScrollView {
-                    Text(recipe.instructions.joined(separator: "\n"))
-                        .padding()
-                        .multilineTextAlignment(.leading)
+                Text("Instructions:")
+                    .font(.headline)
+                ForEach(Array(recipe.instructions.enumerated()), id: \.offset) { index, step in
+                    Text("\(index + 1). \(step)")
+                        .font(.body)
                 }
+              }
+.padding()
+                
             } else {
                 ProgressView("Loading Recipe...")
             }
